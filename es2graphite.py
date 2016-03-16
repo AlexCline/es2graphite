@@ -13,7 +13,7 @@ import socket
 import urllib
 import urllib2
 import argparse
-from datetime import datetime
+from datetime import datetime, timedelta
 
 NODES = {}
 CLUSTER_NAME = ''
@@ -329,9 +329,9 @@ if __name__ == '__main__':
                 sys.exit()
             else:
                 get_metrics()
-                completion_minute = datetime.now().minute
-                while datetime.now().minute == completion_minute:
-                    logging.debug('Waiting to run.. (' + str(completion_minute) + ')')
+                next_run_time = datetime.now() + timedelta(seconds=args.interval)
+                while datetime.now() < next_run_time:
+                    logging.debug('Waiting to run next at ' + str(next_run_time))
                     time.sleep(1)
         except Exception, e:
             logging.error(urllib.quote_plus(traceback.format_exc()))
